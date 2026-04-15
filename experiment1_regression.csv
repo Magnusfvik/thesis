@@ -1,0 +1,4 @@
+coefficient,value,interpretation
+β₀ (intercept),1.523179924242423,Baseline rating
+β₁ (linear),-0.8492424242424177,Linear effect of distance
+β₂ (quadratic),1.2765151515151463,Curvature (negative = bell curve)

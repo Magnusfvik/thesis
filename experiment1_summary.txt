@@ -1,0 +1,12 @@
+================================================================================
+EXPERIMENT 1: VALIDATING THE UNIMODAL RELATIONSHIP
+================================================================================
+
+Sample size: 100 users, 2139 test tracks
+
+Quadratic model: Rating = 1.52 + -0.85×d + 1.28×d²
+R² = 0.284
+
+ANOVA: F = 2.47, p = 0.008499
+
+Result: ⚠ Hypothesis not fully confirmed
