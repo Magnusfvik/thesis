@@ -1,0 +1,35 @@
+# Virtual environment
+venv/
+env/
+*.venv
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# macOS
+.DS_Store
+
+# Data files (optional - uncomment if you don't want to track these)
+# AMBAR/
+# *.csv
+# *.png
+EOFcat > .gitignore << 'EOF'
+# Virtual environment
+venv/
+env/
+*.venv
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# macOS
+.DS_Store
+
+# Data files (optional - uncomment if you don't want to track these)
+# AMBAR/
+# *.csv
+# *.png
