@@ -684,3 +684,17 @@ print("  - experiment2_results.csv")
 print("  - experiment2_summary.txt")
 print("  - experiment2_multiobjective_analysis.png")
 print("  - experiment2_pareto_frontier.png")
+
+# ============================================================================
+# SAVE FOR SENSITIVITY ANALYSIS
+# ============================================================================
+
+import pickle
+
+print("\n[SAVING] Exporting recommendations for sensitivity analysis...")
+
+pickle.dump(recommendations, open('recommendations.pkl', 'wb'))
+pickle.dump(user_E_u, open('user_E_u.pkl', 'wb'))
+
+print("  ✓ Saved: recommendations.pkl")
+print("  ✓ Saved: user_E_u.pkl")
