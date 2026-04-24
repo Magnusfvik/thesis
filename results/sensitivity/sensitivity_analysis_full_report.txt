@@ -1,0 +1,188 @@
+================================================================================
+SENSITIVITY ANALYSIS - FULL PIPELINE RESULTS
+================================================================================
+Generated: 2026-04-24 13:35:49
+
+CONFIGURATION:
+  Dataset: AMBAR (sampled to 200,000 ratings)
+  Users evaluated: 100
+  CF Model: SVD (50 factors, 20 epochs)
+  Recommendations per user: 10
+  Threshold combinations tested: 11
+
+
+================================================================================
+Threshold Combination 1/11
+================================================================================
+Distance threshold: > 0.5
+CF score threshold: > 2.5
+Description: Low distance, high CF
+
+Serendipity Scores:
+  α=0.00: 0.214
+  α=0.25: 0.200
+  α=0.50: 0.161
+  α=0.75: 0.133
+  α=1.00: 0.001
+
+Winner: α=0.0 (score: 0.214)
+
+================================================================================
+Threshold Combination 2/11
+================================================================================
+Distance threshold: > 0.6
+CF score threshold: > 2.0
+Description: Medium-low
+
+Serendipity Scores:
+  α=0.00: 0.693
+  α=0.25: 0.846
+  α=0.50: 0.761
+  α=0.75: 0.706
+  α=1.00: 0.082
+
+Winner: α=0.25 (score: 0.846)
+
+================================================================================
+Threshold Combination 3/11
+================================================================================
+Distance threshold: > 0.7
+CF score threshold: > 1.8
+Description: Original (Ge et al.)
+
+Serendipity Scores:
+  α=0.00: 0.645
+  α=0.25: 0.985
+  α=0.50: 0.963
+  α=0.75: 0.947
+  α=1.00: 0.204
+
+Winner: α=0.25 (score: 0.985)
+
+================================================================================
+Threshold Combination 4/11
+================================================================================
+Distance threshold: > 0.8
+CF score threshold: > 1.5
+Description: High distance, low CF
+
+Serendipity Scores:
+  α=0.00: 0.529
+  α=0.25: 0.988
+  α=0.50: 1.000
+  α=0.75: 1.000
+  α=1.00: 0.591
+
+Winner: α=0.5 (score: 1.000)
+
+================================================================================
+Threshold Combination 5/11
+================================================================================
+Distance threshold: > 0.9
+CF score threshold: > 1.2
+Description: Extremely high distance
+
+Serendipity Scores:
+  α=0.00: 0.361
+  α=0.25: 0.879
+  α=0.50: 0.997
+  α=0.75: 1.000
+  α=1.00: 0.938
+
+Winner: α=0.75 (score: 1.000)
+
+================================================================================
+Threshold Combination 6/11
+================================================================================
+Distance threshold: > 0.65
+CF score threshold: > 1.9
+Description: Slightly stricter than Ge et al.
+
+Serendipity Scores:
+  α=0.00: 0.699
+  α=0.25: 0.957
+  α=0.50: 0.895
+  α=0.75: 0.858
+  α=1.00: 0.119
+
+Winner: α=0.25 (score: 0.957)
+
+================================================================================
+Threshold Combination 7/11
+================================================================================
+Distance threshold: > 0.68
+CF score threshold: > 1.85
+Description: Very close to Ge et al.
+
+Serendipity Scores:
+  α=0.00: 0.682
+  α=0.25: 0.976
+  α=0.50: 0.934
+  α=0.75: 0.906
+  α=1.00: 0.150
+
+Winner: α=0.25 (score: 0.976)
+
+================================================================================
+Threshold Combination 8/11
+================================================================================
+Distance threshold: > 0.72
+CF score threshold: > 1.75
+Description: Slightly different
+
+Serendipity Scores:
+  α=0.00: 0.628
+  α=0.25: 0.995
+  α=0.50: 0.987
+  α=0.75: 0.975
+  α=1.00: 0.241
+
+Winner: α=0.25 (score: 0.995)
+
+================================================================================
+Threshold Combination 9/11
+================================================================================
+Distance threshold: > 0.75
+CF score threshold: > 1.7
+Description: Slightly more lenient than Ge et al.
+
+Serendipity Scores:
+  α=0.00: 0.572
+  α=0.25: 0.993
+  α=0.50: 0.991
+  α=0.75: 0.985
+  α=1.00: 0.307
+
+Winner: α=0.25 (score: 0.993)
+
+================================================================================
+Threshold Combination 10/11
+================================================================================
+Distance threshold: > 0.7
+CF score threshold: > 1.6
+Description: Same distance, lower CF
+
+Serendipity Scores:
+  α=0.00: 0.645
+  α=0.25: 0.998
+  α=0.50: 1.000
+  α=0.75: 1.000
+  α=1.00: 0.454
+
+Winner: α=0.5 (score: 1.000)
+
+================================================================================
+Threshold Combination 11/11
+================================================================================
+Distance threshold: > 0.7
+CF score threshold: > 2.0
+Description: Same distance, higher CF
+
+Serendipity Scores:
+  α=0.00: 0.610
+  α=0.25: 0.844
+  α=0.50: 0.761
+  α=0.75: 0.706
+  α=1.00: 0.082
+
+Winner: α=0.25 (score: 0.844)

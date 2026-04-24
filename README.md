@@ -44,3 +44,21 @@ python PSOMOO.py
 ```
 
 **Outputs:** Comparison plots, Pareto frontier, serendipity metrics
+
+### Sensitivity Analysis
+
+Tests robustness of α=0.25 across different serendipity thresholds.
+
+**Quick version** (iterative testing):
+
+```bash
+python sensitivity_quick.py  # ~10 sec, requires recommendations.pkl from PSOMOO.py
+```
+
+**Full version** (thesis reproducibility):
+
+```bash
+python sensitivity_full.py   # ~45 min, complete pipeline from scratch
+```
+
+**Result:** α=0.25 robust across 88% of reasonable threshold definitions.
