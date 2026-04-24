@@ -62,3 +62,13 @@ python sensitivity_full.py   # ~45 min, complete pipeline from scratch
 ```
 
 **Result:** α=0.25 robust across 88% of reasonable threshold definitions.
+
+### User Variation Analysis
+
+Analyzes heterogeneity in serendipity scores across users.
+
+```bash
+python user_variation_analysis.py  # ~30 sec, requires recommendations.pkl
+```
+
+**Key Finding:** High variation (std=0.39) reveals ~60% users achieve serendipity >0.8 while ~30% achieve <0.3, suggesting user segmentation as valuable future work. Median (0.85) more representative than mean (0.64).

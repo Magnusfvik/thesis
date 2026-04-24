@@ -1,0 +1,113 @@
+================================================================================
+USER VARIATION ANALYSIS - DETAILED REPORT
+================================================================================
+Generated: 2026-04-24 14:28:18
+
+CONFIGURATION:
+  Users analyzed: 100
+  Recommendations per user: 10
+  Distance threshold: > 0.7
+  CF score threshold: > 1.8
+  Alpha values tested: 5
+
+================================================================================
+STATISTICAL SUMMARY
+================================================================================
+
+Pure CF (α=0.0)
+────────────────────────────────────────
+  Mean:              0.6000
+  Standard Deviation: 0.3423
+  Median:            0.7000
+  Min:               0.0000
+  Max:               1.0000
+  Q25:               0.2750
+  Q75:               0.9000
+  IQR:               0.6250
+  Coefficient of Variation: 57.1%
+  Skewness:          -0.4651
+  Kurtosis:          -1.2050
+
+  Interpretation:    High variation
+  Recommendation:    Consider median/segmentation
+
+CF-Biased (α=0.25)
+────────────────────────────────────────
+  Mean:              0.6380
+  Standard Deviation: 0.3906
+  Median:            0.8500
+  Min:               0.0000
+  Max:               1.0000
+  Q25:               0.2000
+  Q75:               1.0000
+  IQR:               0.8000
+  Coefficient of Variation: 61.2%
+  Skewness:          -0.4395
+  Kurtosis:          -1.5008
+
+  Interpretation:    High variation
+  Recommendation:    Consider median/segmentation
+
+Balanced (α=0.5)
+────────────────────────────────────────
+  Mean:              0.5620
+  Standard Deviation: 0.4494
+  Median:            0.7500
+  Min:               0.0000
+  Max:               1.0000
+  Q25:               0.0000
+  Q75:               1.0000
+  IQR:               1.0000
+  Coefficient of Variation: 80.0%
+  Skewness:          -0.1935
+  Kurtosis:          -1.8166
+
+  Interpretation:    High variation
+  Recommendation:    Consider median/segmentation
+
+Distance-Biased (α=0.75)
+────────────────────────────────────────
+  Mean:              0.5610
+  Standard Deviation: 0.4501
+  Median:            0.7500
+  Min:               0.0000
+  Max:               1.0000
+  Q25:               0.0000
+  Q75:               1.0000
+  IQR:               1.0000
+  Coefficient of Variation: 80.2%
+  Skewness:          -0.1892
+  Kurtosis:          -1.8226
+
+  Interpretation:    High variation
+  Recommendation:    Consider median/segmentation
+
+Pure Distance (α=1.0)
+────────────────────────────────────────
+  Mean:              0.2520
+  Standard Deviation: 0.4237
+  Median:            0.0000
+  Min:               0.0000
+  Max:               1.0000
+  Q25:               0.0000
+  Q75:               0.3000
+  IQR:               0.3000
+  Coefficient of Variation: 168.1%
+  Skewness:          1.1508
+  Kurtosis:          -0.6533
+
+  Interpretation:    High variation
+  Recommendation:    Consider median/segmentation
+
+================================================================================
+KEY FINDINGS
+================================================================================
+
+Most Consistent Method:
+  Pure CF (α=0.0)
+  Standard Deviation: 0.3423
+
+Highest Mean Serendipity:
+  CF-Biased (α=0.25)
+  Mean: 0.6380
+
