@@ -1,0 +1,21 @@
+================================================================================
+EXPERIMENT 2: MULTI-OBJECTIVE RECOMMENDATION
+================================================================================
+
+Sample size: 100 users
+Recommendations per user: 10
+Alpha values tested: [0.0, 0.25, 0.5, 0.75, 1.0]
+
+RESULTS:
+                  Method  Alpha  RMSE   MAE  Diversity (ILD)  Serendipity  Coverage  Avg Distance  Avg CF Score
+         Pure CF (α=0.0)  0.000 0.815 0.585            0.805        0.887       833         0.846         2.294
+      CF-Biased (α=0.25)  0.250 0.815 0.585            0.777        0.946       841         0.925         2.248
+        Balanced (α=0.5)  0.500 0.815 0.585            0.640        0.812       891         0.988         2.098
+Distance-Biased (α=0.75)  0.750 0.815 0.585            0.587        0.751       903         1.000         2.032
+   Pure Distance (α=1.0)  1.000 0.815 0.585            0.593        0.184       994         1.000         1.542
+
+KEY FINDINGS:
+- Best accuracy (lowest RMSE): Pure CF (α=0.0)
+- Best diversity: Pure CF (α=0.0)
+- Best serendipity: CF-Biased (α=0.25)
+- Best coverage: Pure Distance (α=1.0)

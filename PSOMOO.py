@@ -36,7 +36,7 @@ print(f"  ✓ Tracks: {len(tracks_df):,} rows")
 print(f"  ✓ Users: {ratings_df['user_id'].nunique():,} unique")
 
 # For faster development, use sample
-USE_SAMPLE = True  # Set to False for full experiment
+USE_SAMPLE = False  # Set to False for full experiment
 if USE_SAMPLE:
     print("\n  [DEBUG] Using sample for faster testing...")
     ratings_df = ratings_df.sample(n=200000, random_state=42)
@@ -493,8 +493,8 @@ for alpha in alphas:
         'diversity': evaluate_diversity(recommendations[alpha]),
         'serendipity': evaluate_serendipity(recommendations[alpha], user_E_u),
         'coverage': evaluate_coverage(recommendations[alpha]),
-        'avg_distance': evaluate_avg_distance(recommendations[alpha]),
-        'avg_cf_score': evaluate_avg_cf_score(recommendations[alpha])
+        #'avg_distance': evaluate_avg_distance(recommendations[alpha]),
+        #'avg_cf_score': evaluate_avg_cf_score(recommendations[alpha])
     }
 
 print("  ✓ Evaluation complete!")
@@ -520,8 +520,8 @@ for alpha in alphas:
         'Diversity (ILD)': r['diversity'],
         'Serendipity': r['serendipity'],
         'Coverage': r['coverage'],
-        'Avg Distance': r['avg_distance'],
-        'Avg CF Score': r['avg_cf_score']
+        #'Avg Distance': r['avg_distance'],
+        #'Avg CF Score': r['avg_cf_score']
     })
 
 results_df = pd.DataFrame(results_table)
