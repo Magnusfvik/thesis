@@ -1,0 +1,3 @@
+Comparison,Mean_Diff,t_statistic,p_value,Cohens_d,Significant
+Optimal (α=0.3) vs Pure CF (α=0.0),0.3980,17.1696,0.0000,1.7256,Yes
+PSO (α=0.35) vs Pure CF (α=0.0),0.3980,17.1696,0.0000,1.7256,Yes

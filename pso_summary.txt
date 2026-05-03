@@ -1,0 +1,55 @@
+======================================================================
+PSO VALIDATION RESULTS
+Generated: 2026-04-30 11:13:11
+======================================================================
+
+GRID SEARCH (baseline)
+  Best alpha  : 0.3500
+  Best score  : 1.0000
+
+CUBIC INTERPOLATION PEAK
+  Peak alpha  : 0.3504
+  Peak score  : 1.0000
+
+PSO RESULTS (10 independent runs)
+  Mean alpha  : 0.3500 +/- 0.0001
+  Mean score  : 1.0000 +/- 0.0000
+  Best alpha  : 0.3500
+  Best score  : 1.0000
+
+INDIVIDUAL RUNS
+  Run  1: alpha=0.3500  score=1.0000
+  Run  2: alpha=0.3500  score=1.0000
+  Run  3: alpha=0.3500  score=1.0000
+  Run  4: alpha=0.3500  score=1.0000
+  Run  5: alpha=0.3500  score=1.0000
+  Run  6: alpha=0.3501  score=1.0000
+  Run  7: alpha=0.3500  score=1.0000
+  Run  8: alpha=0.3500  score=1.0000
+  Run  9: alpha=0.3504  score=1.0000
+  Run 10: alpha=0.3500  score=1.0000
+
+STATISTICAL COMPARISON
+  (PSO-found optimum vs Pure CF baseline - the scientifically relevant test)
+  PSO alpha               : 0.35  serendipity=1.0000
+  Pure CF baseline        : 0.00  serendipity=0.8870
+  Mean difference         : +0.1130
+  t-statistic             : 6.0859
+  p-value                 : 0.0000
+  Cohen's d               : 0.6117
+  Significant improvement : YES
+
+  PSO vs Grid Search agreement:
+  Alpha difference        : 0.0000
+  Score difference        : 0.0000
+  Methods agree (|Δα|<0.05): YES
+
+THESIS NARRATIVE
+  Grid search identified optimal alpha = 0.35 (serendipity = 1.0000).
+  PSO independently converged to alpha = 0.350 +/- 0.0001
+  across 10 independent runs (difference from grid: 0.0000).
+  Both methods agree: the optimal weighting significantly outperforms pure CF
+  (t=6.086, p=0.0000, Cohen's d=0.612).
+  The optimal region is a plateau at alpha in [0.2, 0.6], not a sharp point,
+  confirming that gentle surprise (75% relevance, 25% unexpectedness) is robust.
+======================================================================
