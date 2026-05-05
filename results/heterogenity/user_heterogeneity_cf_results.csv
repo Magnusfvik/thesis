@@ -1,0 +1,4 @@
+Segment,N,Optimal_Alpha,Optimal_Serendipity_Mean,Optimal_Serendipity_Std,Baseline_Serendipity,Improvement,t_statistic,p_value,Cohens_d
+High CF Serendipity,24,0.2500,1.0000,0.0000,0.8917,0.1083,5.4472,0.0000,1.1358
+Medium CF Serendipity,66,0.3000,1.0000,0.0000,0.5591,0.4409,25.7318,0.0000,3.1916
+Low CF Serendipity,10,0.2500,1.0000,0.0000,0.1900,0.8100,81.0000,0.0000,27.0000

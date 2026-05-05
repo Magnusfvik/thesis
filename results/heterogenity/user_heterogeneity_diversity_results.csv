@@ -1,0 +1,4 @@
+Segment,N,Optimal_Alpha,Optimal_Serendipity_Mean,Optimal_Serendipity_Std,Baseline_Serendipity,Improvement,t_statistic,p_value,Cohens_d
+Explorers (High Diversity),33,0.3000,1.0000,0.0000,0.6606,0.3394,8.0463,0.0000,1.4224
+Balanced,34,0.2500,1.0000,0.0000,0.5706,0.4294,10.2988,0.0000,1.7928
+Exploiters (Low Diversity),33,0.2500,1.0000,0.0000,0.5758,0.4242,11.9966,0.0000,2.1207
