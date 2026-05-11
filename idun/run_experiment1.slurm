@@ -1,16 +1,16 @@
 #!/bin/bash
 #SBATCH --job-name=thesis_exp1
-#SBATCH --account=YOUR_ACCOUNT
+#SBATCH --account=magnusfv
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=32
 #SBATCH --mem=32G
 #SBATCH --time=01:30:00              # 90 min — conservative for 5000 users
-#SBATCH --partition=GPUQ             # or 'normal' — check with sinfo
+#SBATCH --partition=CPUQ
 #SBATCH --output=logs/exp1_%j.out
 #SBATCH --error=logs/exp1_%j.err
 #SBATCH --mail-type=END,FAIL
-#SBATCH --mail-user=YOUR_EMAIL@stud.ntnu.no
+#SBATCH --mail-user=magnusfv@stud.ntnu.no
 
 echo "Job started: $(date)"
 echo "Node: $SLURMD_NODENAME"
@@ -19,8 +19,9 @@ echo "CPUs: $SLURM_CPUS_PER_TASK"
 mkdir -p logs idun_results
 
 module purge
-module load Python/3.11.3-GCCcore-12.3.0
-source $HOME/thesis_venv/bin/activate
+module load Anaconda3/2023.09-0
+source $(conda info --base)/etc/profile.d/conda.sh
+conda activate thesis_env
 
 cd $SLURM_SUBMIT_DIR
 

@@ -27,12 +27,14 @@ Steps 1 and 2 can be submitted simultaneously. Step 3 must wait for step 1.
 
 ```bash
 # SSH into IDUN
-ssh username@idun.hpc.ntnu.no
+ssh magnusfv@idun.hpc.ntnu.no
 
-# Create Python environment (only needed once)
-module load Python/3.11.3-GCCcore-12.3.0
-python3 -m venv $HOME/thesis_venv
-source $HOME/thesis_venv/bin/activate
+# Load Anaconda (recommended by IDUN docs)
+module load Anaconda3/2023.09-0
+
+# Create Conda environment (only needed once)
+conda create -n thesis_env python=3.11 -y
+conda activate thesis_env
 pip install numpy pandas scikit-surprise scipy matplotlib seaborn
 ```
 
@@ -44,26 +46,19 @@ Run from your **local machine**:
 # Transfer AMBAR dataset (large — do once, takes a few minutes)
 rsync -avz --progress \
     /Users/Magnusvik/dev/thesis/thesis/AMBAR/ \
-    username@idun.hpc.ntnu.no:thesis/thesis/AMBAR/
+    magnusfv@idun.hpc.ntnu.no:thesis/thesis/AMBAR/
 
 # Transfer IDUN scripts
 rsync -avz --progress \
     /Users/Magnusvik/dev/thesis/thesis/idun/ \
-    username@idun.hpc.ntnu.no:thesis/thesis/idun/
+    magnusfv@idun.hpc.ntnu.no:thesis/thesis/idun/
 ```
-
-## Edit the SLURM scripts
-
-In **all three** `.slurm` files, replace:
-- `YOUR_ACCOUNT` → your NTNU HPC project account (run `id` on IDUN to find it, or ask supervisor)
-- `YOUR_EMAIL@stud.ntnu.no` → your email
-- `--partition=GPUQ` → check available partitions with `sinfo` on IDUN
 
 ## Submit jobs
 
 ```bash
 # SSH into IDUN
-ssh username@idun.hpc.ntnu.no
+ssh magnusfv@idun.hpc.ntnu.no
 cd thesis/thesis/idun
 mkdir -p logs
 
@@ -92,7 +87,7 @@ Run from your **local machine** after all jobs complete:
 
 ```bash
 rsync -avz --progress \
-    username@idun.hpc.ntnu.no:thesis/thesis/idun/idun_results/ \
+    magnusfv@idun.hpc.ntnu.no:thesis/thesis/idun/idun_results/ \
     /Users/Magnusvik/dev/thesis/thesis/idun/idun_results/
 ```
 
