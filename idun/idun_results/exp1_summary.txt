@@ -1,0 +1,7 @@
+EXPERIMENT 1 — UNIMODAL HYPOTHESIS (IDUN)
+Users: 5,000  |  Pairs: 114,690
+Rating = 1.372 + 0.618×d + -0.592×d²
+R² = 0.3689
+δ* = 0.522
+ANOVA: F=8.88, p=0.000000
+Unimodal hypothesis: NOT SUPPORTED

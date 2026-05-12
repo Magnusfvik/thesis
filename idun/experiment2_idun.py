@@ -39,9 +39,10 @@ import pandas as pd
 
 warnings.filterwarnings("ignore")
 
-# Serendipity thresholds (same as original PSOMOO.py)
-DISTANCE_THRESHOLD = 0.7
-CF_THRESHOLD       = 1.8
+# Harmonic mean serendipity — no arbitrary thresholds.
+# U(r) = distance (already in [0,1])
+# R(r) = (cf_score - 1) / 4  →  maps [1,5] to [0,1]
+# S(r) = 2*U*R / (U+R)  (harmonic mean; 0 if either is 0)
 
 # Global track metadata for workers
 _TRACK_META = None
@@ -98,12 +99,14 @@ def evaluate_alpha(alpha, user_recs, workers):
         if not recs:
             continue
 
-        # Serendipity: fraction of recs that are both unexpected AND relevant
-        n_serendipitous = sum(
-            1 for r in recs
-            if r["distance"] > DISTANCE_THRESHOLD and r["cf_score"] > CF_THRESHOLD
-        )
-        serendipity_scores.append(n_serendipitous / len(recs))
+        # Harmonic mean serendipity per recommendation
+        s_scores = []
+        for r in recs:
+            U = float(r["distance"])
+            R = (float(r["cf_score"]) - 1.0) / 4.0
+            denom = U + R
+            s_scores.append(2 * U * R / denom if denom > 0 else 0.0)
+        serendipity_scores.append(float(np.mean(s_scores)))
 
         avg_distances.append(np.mean([r["distance"] for r in recs]))
         avg_cf_scores.append(np.mean([r["cf_score"] for r in recs]))
@@ -291,7 +294,7 @@ def main():
     with open(summary_path, "w") as f:
         f.write("EXPERIMENT 2 — MULTI-OBJECTIVE WEIGHTED SCALARIZATION (IDUN)\n")
         f.write(f"Users: {n_users:,}  |  Alpha values: {alpha_values}\n")
-        f.write(f"Serendipity thresholds: distance>{DISTANCE_THRESHOLD}, CF>{CF_THRESHOLD}\n\n")
+        f.write(f"Serendipity metric: harmonic mean of U=distance and R=(cf_score-1)/4\n\n")
         f.write(results_df.to_string(index=False, float_format=lambda x: f"{x:.4f}"))
         f.write(f"\n\nBest serendipity: α={best_seren_alpha:.2f} → {best_seren_val:.4f}\n")
     print(f"  Saved: {summary_path}")
