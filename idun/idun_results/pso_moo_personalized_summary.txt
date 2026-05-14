@@ -1,0 +1,8 @@
+PERSONALIZED MOPSO — 500D (IDUN)
+Archive size : 1 non-dominated solutions
+Serendipity range : [0.6573, 0.6573]
+Relevance range   : [3.0256,   3.0256]
+Mean std(α) across front : 0.2889
+
+ mean_serendipity  mean_relevance  mean_alpha  std_alpha
+           0.6573          3.0256      0.3649     0.2889

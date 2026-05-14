@@ -66,17 +66,26 @@ def _init_worker(svd_factors, track_meta, all_tracks):
 # ---------------------------------------------------------------------------
 # Helper: build E_u as a frozenset of category style strings for one user
 # ---------------------------------------------------------------------------
-def build_E_u_categories(user_id, train_df, track_meta):
+def build_E_u_categories(user_id, train_df, track_meta, track_artist, artist_meta):
     """
     Returns:
         E_u_ids        : set of track IDs the user has rated (to exclude from candidates)
-        E_u_categories : frozenset of all category style tags in those tracks
+        E_u_categories : frozenset of granular style tags from rated tracks AND their artists
+
+    Two-level expansion:
+      1. styles from each rated track (granular, e.g. "synthpop", "indie rock")
+      2. styles from each rated artist — captures broader taste beyond specific tracks
     """
     rated_ids = set(train_df.loc[train_df["user_id"] == user_id, "track_id"])
     cats = set()
     for tid in rated_ids:
+        # Track-level styles
         if tid in track_meta:
             cats.update(track_meta[tid])
+        # Artist-level styles
+        aid = track_artist.get(tid)
+        if aid is not None and aid in artist_meta:
+            cats.update(artist_meta[aid])
     return rated_ids, frozenset(cats)
 
 
@@ -208,30 +217,30 @@ def main():
     print(f"  Tracks  : {len(tracks_df):,} unique tracks")
 
     # -----------------------------------------------------------------------
-    # 2. Parse track metadata → frozenset of category style tags per track
+    # 2. Parse track + artist metadata → granular style frozensets
     # -----------------------------------------------------------------------
-    print("\n[2/6] Parsing track metadata...")
+    print("\n[2/6] Parsing track and artist metadata...")
 
-    def parse_cats(val):
+    def parse_styles(val):
+        """Parse pipe-separated style string into a frozenset of tags."""
         if pd.isna(val):
             return frozenset()
-        if isinstance(val, list):
-            tags = val
-        else:
-            tags = [s.strip() for s in str(val).split("|")]
-        # split compound tags like "Rock|Pop" → ["Rock", "Pop"]
-        expanded = set()
-        for t in tags:
-            for part in t.split("|"):
-                part = part.strip()
-                if part:
-                    expanded.add(part)
-        return frozenset(expanded)
+        tags = val if isinstance(val, list) else str(val).split("|")
+        return frozenset(t.strip() for t in tags if t.strip())
 
-    tracks_df["_cats"] = tracks_df["category_styles"].apply(parse_cats)
-    track_meta = dict(zip(tracks_df["track_id"], tracks_df["_cats"]))
+    # Track-level: use granular `styles` (not category_styles) for finer discrimination
+    tracks_df["_styles"] = tracks_df["styles"].apply(parse_styles)
+    track_meta = dict(zip(tracks_df["track_id"], tracks_df["_styles"]))
     all_tracks_set = set(tracks_df["track_id"].unique())
-    print(f"  Pre-computed metadata for {len(track_meta):,} tracks")
+
+    # Artist-level: styles per artist for E_u expansion
+    artists_df  = pd.read_csv(os.path.join(args.data_dir, "artists_info.csv"))
+    artists_df["_styles"] = artists_df["styles"].apply(parse_styles)
+    artist_meta   = dict(zip(artists_df["artist_id"], artists_df["_styles"]))
+    track_artist  = dict(zip(tracks_df["track_id"],  tracks_df["artist_id"]))
+
+    print(f"  Track styles   : {len(track_meta):,} tracks")
+    print(f"  Artist styles  : {len(artist_meta):,} artists")
 
     # -----------------------------------------------------------------------
     # 3. Train/test split (80/20 per user, temporal if timestamps present)
@@ -263,11 +272,11 @@ def main():
     selected_users = np.random.choice(eligible, size=n_select, replace=False)
     print(f"  Selected       : {n_select:,} users")
 
-    # Build E_u for each selected user
+    # Build E_u for each selected user (track styles + artist styles)
     print("  Building E_u ...")
     user_args = []
     for uid in selected_users:
-        E_u_ids, E_u_cats = build_E_u_categories(uid, train_df, track_meta)
+        E_u_ids, E_u_cats = build_E_u_categories(uid, train_df, track_meta, track_artist, artist_meta)
         user_args.append((uid, E_u_ids, E_u_cats))
     print(f"  E_u built for {len(user_args):,} users")
 
