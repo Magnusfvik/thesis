@@ -1,0 +1,37 @@
+======================================================================
+SINGLE-OBJECTIVE PSO — PURS DATA
+Generated: 2026-05-25 11:50:07
+======================================================================
+
+GRID SEARCH (baseline)
+  Best alpha     : 0.3500
+  Best serendipity: 0.4944
+
+PSO RESULTS (10 independent runs)
+  Mean alpha     : 0.3500 ± 0.0000
+  Range          : [0.3499, 0.3500]
+  Mean serendipity: 0.4944 ± 0.0000
+
+INDIVIDUAL RUNS
+  Run  1: alpha=0.3500  serendipity=0.4944
+  Run  2: alpha=0.3500  serendipity=0.4944
+  Run  3: alpha=0.3500  serendipity=0.4944
+  Run  4: alpha=0.3499  serendipity=0.4944
+  Run  5: alpha=0.3499  serendipity=0.4944
+  Run  6: alpha=0.3500  serendipity=0.4944
+  Run  7: alpha=0.3500  serendipity=0.4944
+  Run  8: alpha=0.3500  serendipity=0.4944
+  Run  9: alpha=0.3500  serendipity=0.4944
+  Run 10: alpha=0.3500  serendipity=0.4944
+
+STATISTICAL COMPARISON (PSO optimum vs pure CF)
+  PSO α≈0.35  serendipity=0.4944
+  Pure CF α=0.00  serendipity=0.3813
+  Mean difference : +0.1131
+  t-statistic     : 194.937
+  p-value         : 0.000000
+  Cohen's d       : 2.757
+  95% CI          : [0.1120, 0.1142]
+
+PSO vs grid agreement (|Δα| < 0.10): YES
+Alpha difference: 0.0000

@@ -37,7 +37,7 @@ from multiprocessing import Pool
 
 import numpy as np
 import pandas as pd
-from surprise import SVD, Dataset, Reader
+from surprise import SVD, KNNBasic, Dataset, Reader
 
 warnings.filterwarnings("ignore")
 
@@ -50,15 +50,17 @@ ALPHA_VALUES = [0.0, 0.15, 0.25, 0.30, 0.35, 0.40, 0.50, 0.65, 0.75, 0.85, 1.0]
 # Global state — populated in each worker via Pool initializer.
 # Using an initializer works on both Linux (IDUN, fork) and macOS (spawn).
 # ---------------------------------------------------------------------------
-_SVD_FACTORS = None      # dict of numpy arrays extracted from trained SVD
+_SVD_FACTORS = None      # dict of numpy arrays extracted from trained SVD (SVD mode)
+_KNN_MODEL   = None      # fitted KNNBasic model (KNN mode)
 _TRACK_META  = None      # dict: track_id -> frozenset of category strings
 _ALL_TRACKS  = None      # set of all track ids
 
 
-def _init_worker(svd_factors, track_meta, all_tracks):
+def _init_worker(svd_factors, knn_model, track_meta, all_tracks):
     """Initialiser run once per worker process to set shared read-only state."""
-    global _SVD_FACTORS, _TRACK_META, _ALL_TRACKS
+    global _SVD_FACTORS, _KNN_MODEL, _TRACK_META, _ALL_TRACKS
     _SVD_FACTORS = svd_factors
+    _KNN_MODEL   = knn_model
     _TRACK_META  = track_meta
     _ALL_TRACKS  = all_tracks
 
@@ -145,9 +147,16 @@ def process_user(args):
     if not candidate_ids:
         return user_id, {a: [] for a in ALPHA_VALUES}
 
-    # --- Vectorised CF predictions for all candidates ---
-    cf_preds = _predict_batch(user_id, candidate_ids)          # shape (N_cand,)
-    cf_norm  = (cf_preds - 1.0) / 4.0                         # normalise to [0,1]
+    # --- CF predictions for all candidates (stored for evaluation) ---
+    if _KNN_MODEL is not None:
+        # KNN: per-item predict (slower but correct)
+        cf_preds = np.array([
+            _KNN_MODEL.predict(user_id, iid).est
+            for iid in candidate_ids
+        ], dtype=np.float32)
+        cf_preds = np.clip(cf_preds, 1.0, 5.0)
+    else:
+        cf_preds = _predict_batch(user_id, candidate_ids)      # shape (N_cand,)
 
     # --- Jaccard distances for all candidates ---
     distances = np.empty(len(candidate_ids), dtype=np.float32)
@@ -160,7 +169,12 @@ def process_user(args):
             union = len(track_cats | E_u_categories)
             distances[k] = 1.0 - inter / union if union > 0 else 1.0
 
-    # --- Apply all alpha values in one pass ---
+    # Normalise CF predictions to [0,1] for scoring
+    cf_norm = (cf_preds - 1.0) / 4.0
+
+    # Score = α * unexpectedness + (1-α) * CF relevance
+    # α=0 → pure CF (KNN: stays near familiar items; SVD: already diverse)
+    # α=1 → pure unexpectedness
     user_recs = {}
     for alpha in ALPHA_VALUES:
         scores = alpha * distances + (1.0 - alpha) * cf_norm
@@ -191,6 +205,8 @@ def main():
     parser.add_argument("--out_dir",  type=str, default="idun_results", help="Output directory for pkl files")
     parser.add_argument("--seed",     type=int, default=42,     help="Random seed")
     parser.add_argument("--checkpoint_every", type=int, default=500, help="Save checkpoint every N users")
+    parser.add_argument("--model", type=str, default="svd", choices=["svd", "knn"],
+                        help="CF model: svd (default, fast, vectorised) or knn (user-user, slower)")
     args = parser.parse_args()
 
     os.makedirs(args.out_dir, exist_ok=True)
@@ -233,14 +249,20 @@ def main():
     track_meta = dict(zip(tracks_df["track_id"], tracks_df["_styles"]))
     all_tracks_set = set(tracks_df["track_id"].unique())
 
-    # Artist-level: styles per artist for E_u expansion
-    artists_df  = pd.read_csv(os.path.join(args.data_dir, "artists_info.csv"))
-    artists_df["_styles"] = artists_df["styles"].apply(parse_styles)
-    artist_meta   = dict(zip(artists_df["artist_id"], artists_df["_styles"]))
-    track_artist  = dict(zip(tracks_df["track_id"],  tracks_df["artist_id"]))
-
-    print(f"  Track styles   : {len(track_meta):,} tracks")
-    print(f"  Artist styles  : {len(artist_meta):,} artists")
+    # Artist-level: styles per artist for E_u expansion (optional)
+    artists_path = os.path.join(args.data_dir, "artists_info.csv")
+    if os.path.exists(artists_path) and "artist_id" in tracks_df.columns:
+        artists_df   = pd.read_csv(artists_path)
+        artists_df["_styles"] = artists_df["styles"].apply(parse_styles)
+        artist_meta  = dict(zip(artists_df["artist_id"], artists_df["_styles"]))
+        track_artist = dict(zip(tracks_df["track_id"],  tracks_df["artist_id"]))
+        print(f"  Track styles   : {len(track_meta):,} tracks")
+        print(f"  Artist styles  : {len(artist_meta):,} artists")
+    else:
+        artist_meta  = {}
+        track_artist = {}
+        print(f"  Track styles   : {len(track_meta):,} tracks")
+        print(f"  Artist styles  : not available (skipping artist expansion)")
 
     # -----------------------------------------------------------------------
     # 3. Train/test split (80/20 per user, temporal if timestamps present)
@@ -281,26 +303,34 @@ def main():
     print(f"  E_u built for {len(user_args):,} users")
 
     # -----------------------------------------------------------------------
-    # 5. Train SVD on full training set — once for all alpha values
+    # 5. Train CF model on full training set — once for all alpha values
     # -----------------------------------------------------------------------
-    print("\n[5/6] Training SVD (50 factors, 20 epochs) on full train set...")
-    reader   = Reader(rating_scale=(1, 5))
+    reader        = Reader(rating_scale=(1, 5))
     surprise_data = Dataset.load_from_df(train_df[["user_id", "track_id", "rating"]], reader)
-    svd      = SVD(n_factors=50, n_epochs=20, random_state=args.seed, verbose=False)
-    trainset = surprise_data.build_full_trainset()
-    svd.fit(trainset)
-    print("  SVD trained.")
+    trainset      = surprise_data.build_full_trainset()
 
-    # Build the shared data bundle passed to each worker via initializer
-    svd_factors = {
-        "pu":          svd.pu,
-        "qi":          svd.qi,
-        "bu":          svd.bu,
-        "bi":          svd.bi,
-        "global_mean": trainset.global_mean,
-        "uid_map":     {raw: inner for raw, inner in trainset._raw2inner_id_users.items()},
-        "iid_map":     {raw: inner for raw, inner in trainset._raw2inner_id_items.items()},
-    }
+    svd_factors = None
+    knn_model   = None
+
+    if args.model == "knn":
+        print("\n[5/6] Training User-User KNNBasic (k=40) on full train set...")
+        knn_model = KNNBasic(k=40, sim_options={"user_based": True}, verbose=False)
+        knn_model.fit(trainset)
+        print("  KNN trained.")
+    else:
+        print("\n[5/6] Training SVD (50 factors, 20 epochs) on full train set...")
+        svd = SVD(n_factors=50, n_epochs=20, random_state=args.seed, verbose=False)
+        svd.fit(trainset)
+        print("  SVD trained.")
+        svd_factors = {
+            "pu":          svd.pu,
+            "qi":          svd.qi,
+            "bu":          svd.bu,
+            "bi":          svd.bi,
+            "global_mean": trainset.global_mean,
+            "uid_map":     {raw: inner for raw, inner in trainset._raw2inner_id_users.items()},
+            "iid_map":     {raw: inner for raw, inner in trainset._raw2inner_id_items.items()},
+        }
 
     # -----------------------------------------------------------------------
     # 6. Parallel recommendation generation
@@ -317,7 +347,7 @@ def main():
     with Pool(
         processes=args.workers,
         initializer=_init_worker,
-        initargs=(svd_factors, track_meta, all_tracks_set),
+        initargs=(svd_factors, knn_model, track_meta, all_tracks_set),
     ) as pool:
         for done, (user_id, user_recs) in enumerate(
             pool.imap_unordered(process_user, user_args, chunksize=10), start=1

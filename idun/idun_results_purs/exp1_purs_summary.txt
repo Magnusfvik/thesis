@@ -1,0 +1,8 @@
+EXPERIMENT 1 (PURS) — UNIMODAL HYPOTHESIS
+Distance metric : PURS latent-space Euclidean (k=3 clusters)
+Users : 5,000  |  Pairs : 114,690
+Rating = 1.336 + 0.684×d + -0.396×d²
+R² = 0.7211
+δ* = 0.863
+ANOVA: F=110.16, p=0.000000
+Unimodal hypothesis: SUPPORTED

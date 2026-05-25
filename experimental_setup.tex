@@ -1,0 +1,53 @@
+% ============================================================
+% Chapter: Experimental Setup
+% ============================================================
+
+\chapter{Experimental Setup}
+\label{chap:setup}
+
+The experiments in this thesis share a common configuration built on the
+dataset, model, and metrics introduced in the preceding chapters.
+Table~\ref{tab:default_setup} summarises the default values used across all
+experiments.  Where an experiment deviates from these defaults, this is noted
+explicitly in the relevant section.
+
+\begin{table}[h]
+\centering
+\caption{Default experimental configuration.}
+\label{tab:default_setup}
+\begin{tabular}{lll}
+\toprule
+\textbf{Category} & \textbf{Parameter} & \textbf{Default value} \\
+\midrule
+\multirow{2}{*}{Dataset}
+    & Primary   & AMBAR \\
+    & Secondary & MovieLens-1M \\
+\midrule
+\multirow{2}{*}{Preprocessing}
+    & Rating binarisation (AMBAR) & $\geq 3 \to$ liked (5),\; $< 3 \to$ disliked (1) \\
+    & Train/test split            & 80/20 per user (temporal if timestamps available) \\
+\midrule
+\multirow{3}{*}{User sampling}
+    & Min.\ training ratings  & 30 \\
+    & Min.\ test ratings      & 10 \\
+    & Users sampled (AMBAR)   & 5\,000 \\
+\midrule
+\multirow{2}{*}{CF model (SVD)}
+    & Latent factors  & 50 \\
+    & Training epochs & 20 \\
+\midrule
+\multirow{2}{*}{Unexpectedness}
+    & Metric            & PURS latent-space Euclidean distance \\
+    & Interest clusters & $k = 3$ (k-means on rated item embeddings) \\
+\midrule
+\multirow{2}{*}{Serendipity}
+    & Definition      & Harmonic mean of unexpectedness and normalised relevance \\
+    & List length     & Top-10 recommendations per user \\
+\midrule
+$\alpha$ grid
+    & Values tested & \{0.00, 0.15, 0.25, 0.30, 0.35, 0.40, 0.50, 0.65, 0.75, 0.85, 1.00\} \\
+\midrule
+Reproducibility & Random seed & 42 \\
+\bottomrule
+\end{tabular}
+\end{table}
